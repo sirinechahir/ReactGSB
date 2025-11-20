@@ -1,28 +1,32 @@
 import './App.css';
-import {BrowserRouter} from 'react-router-dom'
-import {Routes} from 'react-router-dom'
-import {Route} from 'react-router-dom'
-import {Link} from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
 import { AuthProvider } from './context/AuthContext';
-
-
+import PrivateRoute from './components/PrivateRoute'; 
+import FraisAdd from './pages/FraisAdd';
 
 function App() {
   return (
     <BrowserRouter>
-      <Navbar/>
       <AuthProvider>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/frais/ajouter" element={<FraisAdd />} />
         </Routes>
       </AuthProvider>
-  
     </BrowserRouter>
   );
 }

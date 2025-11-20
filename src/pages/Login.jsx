@@ -9,14 +9,21 @@ export default function Login() {
   const navigate = useNavigate();
   const { loginUser } = useAuth();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (loginUser(login, password)) {
-      navigate('/dashboard');
-    } else {
-      alert('Identifiants incorrects');
-    }
-  };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    await loginUser(login, password);
+
+    navigate('/dashboard');
+  } catch (error) {
+    alert('Échec de la connexion');
+  }
+};
+
+
+
 
   return (
     <div className="login-page">
