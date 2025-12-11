@@ -19,7 +19,7 @@ function Navbar() {
                 </div>
                 <div className="auth">
                     {user ? (
-                        <button onClick={logoutUser} className="lien">
+                        <button onClick={logoutUser} type="deco" className="lien">
                             Déconnexion
                         </button>
                     ) : (

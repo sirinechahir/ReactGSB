@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/FraisForm.css';
+import '../styles/FraisHorsForfait.css';
 import axios from 'axios';
 import { API_URL, getCurrentUser } from '../services/authService';
 
-function FraisForm() {
+function FraisForm({frais}) {
   const [idFrais, setIdFrais] = useState(null);
   const [anneeMois, setAnneeMois] = useState('');
-  const [nbJustificatifs, setNbJustificatifs] = useState('');
+  const [nbJustificatifs, setNbJustificatifs] = useState(0);
   const [montant, setMontant] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
+
+  // Pré-remplir le formulaire si on modifie un frais existant 
+  useEffect(() => { 
+    if (frais) { 
+      setIdFrais(frais.id_frais); 
+      setMontant(frais.montantvalide || ''); 
+      // TODO : compléter en affectant la valeur à anneeMois et nbJustificatifs 
+      setAnneeMois(frais.anneemois || '');
+      setNbJustificatifs(frais.nbjustificatifs || '');
+      } 
+    }, [frais]);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
@@ -28,15 +40,26 @@ function FraisForm() {
       const fraisData = {
         anneemois: anneeMois,
         nbjustificatifs: parseInt(nbJustificatifs, 10),
-        montant: parseFloat(montant),
-        id_visiteur: getCurrentUser()['id_visiteur'],
       };
 
-      const response = await axios.post(`${API_URL}frais/ajout`, fraisData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (frais){
+        fraisData["id_frais"]=idFrais;
+        fraisData["montantvalide"] = parseFloat(montant);
 
-      console.log('Réponse API:', response.data);
+        const response = await axios.post(
+          `${API_URL}frais/modif`,
+          fraisData,
+          { headers: { Authorization: `Bearer ${token}` }}
+        );
+        console.log(response)
+      } else {
+        fraisData["id_visiteur"] = getCurrentUser()['id_visiteur'];
+
+        const response = await axios.post(`${API_URL}frais/ajout`, fraisData, {
+          headers: {Authorization : `Bearer ${token}` },
+        });
+        console.log(response)
+      }
 
       navigate('/dashboard');
     } catch (err) {
@@ -53,7 +76,7 @@ function FraisForm() {
 
   return (
     <div className="frais-form-container">
-      <h2>Saisir un frais</h2>
+      <h2>{frais ? 'Modifier le frais ' : 'Saisir un frais'}</h2>
 
       {error && <div className="error-message">{error}</div>}
 
@@ -93,8 +116,10 @@ function FraisForm() {
           />
         </div>
 
+        <Link className="frais-hors-forfait-link" to={`/frais/${idFrais}/hors-forfait`}>Frais hors forfait</Link>
+
         <button type="submit" disabled={loading}>
-          {loading ? 'Enregistrement...' : 'Ajouter'}
+          {loading ? 'Enregistrement...' : (frais ? 'Mettre à jour': 'Ajouter')}
         </button>
       </form>
     </div>
