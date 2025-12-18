@@ -42,7 +42,7 @@ function FraisHorsForfait() {
         if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce frais hors forfait ?")) return;
         try {
             await axios.delete(`${API_URL}fraisHF/suppr`, {
-                data: { id_fraishorsforfait: idHF },
+                data: { id_fraisHF: idHF },
                 headers: { Authorization: `Bearer ${token}` },
             });
             setFraisHorsForfaitList(fraisHorsForfaitList.filter((f) => f.id_fraishorsforfait !== idHF));
@@ -50,7 +50,7 @@ function FraisHorsForfait() {
             console.error("Erreur lors de la suppression:", error);
         }
     };
-
+    
 
     if (loading) return <div><b>Chargement des frais hors forfait...</b></div>;
 

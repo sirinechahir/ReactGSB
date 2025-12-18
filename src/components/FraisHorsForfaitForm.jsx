@@ -29,23 +29,47 @@ function FraisHorsForfaitForm({ idFrais, frais }) {
         setError("");
 
         try {
-            await axios.post(
-                `${API_URL}fraisHF/ajout`,
-                {
-                    id_frais: idFrais,
-                    date,
-                    libelle,
-                    montant,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const token = localStorage.getItem("token");
+            if (!token) {
+                throw new Error("Token non défini, veuillez vous reconnecter.");
+            }
+
+            const fraisHFData = {
+                date,
+                libelle,
+                montant: parseFloat(montant),
+            };
+
+            if (frais) {
+                // Cas modification
+                fraisHFData["id_fraisHF"] = frais.id_fraishorsforfait;
+
+                const response = await axios.post(
+                    `${API_URL}fraisHF/modif`,
+                    fraisHFData,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                console.log("Modification réussie:", response.data);
+            } else {
+                // Cas ajout
+                fraisHFData["id_frais"] = idFrais;
+
+                const response = await axios.post(
+                    `${API_URL}fraisHF/ajout`,
+                    fraisHFData,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                console.log("Ajout réussi:", response.data);
+            }
+
             navigate(`/frais/${idFrais}/hors-forfait`);
         } catch (err) {
-            setError("Impossible d'enregistrer le frais hors forfait.");
+            console.error("Erreur:", err);
+            setError(
+                err.response?.data?.message ||
+                err.message ||
+                "Erreur lors de l'enregistrement"
+            );
         } finally {
             setLoading(false);
         }

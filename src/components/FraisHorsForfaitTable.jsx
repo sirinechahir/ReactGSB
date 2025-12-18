@@ -20,16 +20,18 @@ function FraisHorsForfaitTable({ idFrais, fraisHorsForfaitList, total, handleDel
                             <td>{f.date_fraishorsforfait}</td>
                             <td>{f.montant_fraishorsforfait}</td>
                             <td>{f.lib_fraishorsforfait}</td>
-                             <td>
+                            <td>
                                 <button onClick={() => navigate(`/frais/${f.id_frais}/hors-forfait/modifier/${f.id_fraishorsforfait}`)}
                                     className="edit-button" >
                                     Modifier
                                 </button>
-                                <button onClick={() => handleDelete(f.id_frais)}
-                                    className="delete-button" >
+                                <button onClick={() => handleDelete(f.id_fraishorsforfait)}
+                                    className="delete-button"
+                                >
                                     Supprimer
-                                </button> 
-                            </td> 
+                                </button>
+                                
+                            </td>
                         </tr>
                     ))}
                 </tbody>
@@ -37,7 +39,7 @@ function FraisHorsForfaitTable({ idFrais, fraisHorsForfaitList, total, handleDel
             <div className="total">
                 Total : {total} €
             </div>
-            <br/>
+            <br />
             <button onClick={() => navigate(`/frais/${idFrais}/hors-forfait/ajouter`)}
                 className="button" >
                 Ajouter

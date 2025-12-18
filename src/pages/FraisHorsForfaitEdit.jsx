@@ -32,7 +32,7 @@ function FraisHorsForfaitEdit() {
   if (!frais) return <div>Frais non trouvé</div>;
 
 
-  return (<FraisHorsForfaitForm frais={frais} />);
+  return (<FraisHorsForfaitForm idFrais={id} idHF={idHF} frais={frais} />);
 }
 
 export default FraisHorsForfaitEdit;
