@@ -16,6 +16,14 @@ function Navbar() {
                         </Link>
                     )}
                     <Link to="/frais/ajouter" className="lien">Frais Ajouter</Link>
+
+                    {/* Lien médicaments — visible uniquement si connecté */}
+                    {user && (
+                        <Link to="/listerMedicament" className="lien">
+                            Liste médicaments
+                        </Link>
+                    )}
+
                 </div>
                 <div className="auth">
                     {user ? (
